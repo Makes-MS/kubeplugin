@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kubeplugin-pod
+spec:
+  containers:
+    - name: kubeplugin
+      image: kubeplugin:latest
+      command: ["bash", "/app/kubeplugin.bash", "default", "pods"]
+      volumeMounts:
+        - name: kube-config
+          mountPath: /root/.kube
+        - name: minikube-config
+          mountPath: /root/.minikube
+  restartPolicy: Never
+  volumes:
+    - name: kube-config
+      hostPath:
+        path: /c/Users/myurkevych/.kube
+    - name: minikube-config
+      hostPath:
+        path: /c/Users/myurkevych/.minikube
