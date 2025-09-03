@@ -2,10 +2,16 @@
 
 # Define command-line arguments
 
-RESOURCE_TYPE=$0
+NAMESPACE=$1
+RESOURCE_TYPE=$2
+
+if [ -z "$NAMESPACE" ] || [ -z "$RESOURCE_TYPE" ]; then
+  echo "Usage: $0 <namespace> <resource_type>"
+  exit 1
+fi
 
 # Retrieve resource usage statistics from Kubernetes
-kubectl $2 $RESOURCE_TYPE -n $1 | tail -n +2 | while read line
+kubectl top $RESOURCE_TYPE -n $NAMESPACE | tail -n +2 | while read line
 do
   # Extract CPU and memory usage from the output
   NAME=$(echo $line | awk '{print $1}')
@@ -14,4 +20,5 @@ do
 
   # Output the statistics to the console
   # "Resource, Namespace, Name, CPU, Memory"
+  echo "$RESOURCE_TYPE,$NAMESPACE,$NAME,$CPU,$MEMORY"
 done
